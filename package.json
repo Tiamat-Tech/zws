@@ -9,26 +9,26 @@
 	},
 	"devDependencies": {
 		"@semantic-release/exec": "5.0.0",
-		"@tsconfig/node14": "1.0.0",
-		"@types/node": "14.14.41",
+		"@tsconfig/node16": "1.0.1",
+		"@types/node": "15.3.1",
 		"cli-ux": "5.5.1",
 		"eslint-plugin-prettier": "3.4.0",
-		"prettier": "2.2.1",
-		"prettier-config-xo": "1.0.3",
-		"prisma": "2.21.2",
-		"semantic-release": "17.4.2",
+		"prettier": "2.3.1",
+		"prettier-config-xo": "1.0.4",
+		"prisma": "2.24.1",
+		"semantic-release": "17.4.3",
 		"semantic-release-docker": "2.2.0",
-		"ts-json-schema-generator": "0.90.0",
-		"ts-node": "9.1.1",
-		"type-fest": "1.0.2",
+		"ts-json-schema-generator": "0.92.0",
+		"ts-node": "10.0.0",
+		"type-fest": "1.2.0",
 		"typescript": "4.2.4",
-		"xo": "0.38.2"
+		"xo": "0.40.2"
 	},
 	"license": "Apache-2.0",
 	"main": "./tsc_output/src/index.js",
 	"name": "@zws.im/zws",
 	"engines": {
-		"node": "15.x"
+		"node": "15.x || 16.x"
 	},
 	"private": true,
 	"repository": {
@@ -50,6 +50,7 @@
 		"prettier": true,
 		"rules": {
 			"prettier/prettier": "off",
+			"unicorn/prefer-node-protocol": "off",
 			"unicorn/filename-case": "off",
 			"import/extensions": "off",
 			"unicorn/no-array-reduce": "off",
@@ -58,16 +59,17 @@
 		}
 	},
 	"dependencies": {
-		"@pizzafox/util": "2.9.0",
-		"@prisma/client": "2.21.2",
-		"@sentry/node": "6.2.5",
+		"@jonahsnider/util": "2.14.0",
+		"@prisma/client": "2.24.1",
+		"@sentry/node": "6.5.1",
 		"consola": "2.15.3",
-		"dotenv": "8.2.0",
-		"fastify": "3.14.2",
+		"dotenv": "10.0.0",
+		"fastify": "3.17.0",
 		"fastify-auth": "1.1.0",
 		"fastify-bearer-auth": "5.1.0",
-		"fastify-error": "0.3.0",
-		"fastify-swagger": "4.6.0",
-		"ow": "0.23.0"
+		"fastify-error": "0.3.1",
+		"fastify-swagger": "4.7.0",
+		"millify": "4.0.0",
+		"zod": "3.1.0"
 	}
 }

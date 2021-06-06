@@ -1,8 +1,9 @@
+import {Http} from '@jonahsnider/util';
 import {FastifyInstance, RawReplyDefaultExpression, RawRequestDefaultExpression, RawServerDefault, RouteOptions} from 'fastify';
 import Stats from '../../../../types/schemas/models/Stats';
 import TotalStatsOptions from '../../../../types/schemas/parameters/TotalStatsOptions';
 import {server} from '../../../config';
-import {urls} from '../../../services';
+import {instance} from '../../../services';
 
 export default function declareRoute(fastify: FastifyInstance) {
 	const route: RouteOptions<RawServerDefault, RawRequestDefaultExpression, RawReplyDefaultExpression, {Querystring: TotalStatsOptions; Reply: Stats}> = {
@@ -14,20 +15,23 @@ export default function declareRoute(fastify: FastifyInstance) {
 			summary: 'Total statistics',
 			description: 'Total usage statistics for this instance',
 			querystring: fastify.getSchema('https://zws.im/schemas/TotalStatsOptions.json'),
-			response: {200: fastify.getSchema('https://zws.im/schemas/Stats.json'), 500: fastify.getSchema('https://zws.im/schemas/Error.json')}
+			response: {
+				[Http.Status.Ok]: fastify.getSchema('https://zws.im/schemas/Stats.json'),
+				[Http.Status.InternalServerError]: fastify.getSchema('https://zws.im/schemas/Error.json')
+			}
 		},
-		handler: async (request, reply) => {
-			const urlStats = await urls.totalStats();
+		handler: async request => {
+			const stats = await instance.stats();
 
 			if (request.query.format) {
 				return {
-					urls: urlStats.urls.toLocaleString(),
-					visits: urlStats.visits.toLocaleString(),
+					urls: stats.urls.toLocaleString(),
+					visits: stats.visits.toLocaleString(),
 					version: `v${server.version}`
 				};
 			}
 
-			return {...urlStats, version: server.version};
+			return {...stats, version: server.version};
 		}
 	};
 

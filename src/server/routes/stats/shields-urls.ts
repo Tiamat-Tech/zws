@@ -1,6 +1,7 @@
 import {FastifyInstance, RawReplyDefaultExpression, RawRequestDefaultExpression, RawServerDefault, RouteOptions} from 'fastify';
+import {Http} from '@jonahsnider/util';
 import {server} from '../../../config';
-import {format, urls} from '../../../services';
+import {format, instance} from '../../../services';
 import ShieldsEndpointResponse from '../../../../types/schemas/responses/ShieldsEndpointResponse';
 
 export default function declareRoute(fastify: FastifyInstance) {
@@ -19,10 +20,13 @@ export default function declareRoute(fastify: FastifyInstance) {
 			summary: 'Shields endpoint for URLs',
 			description: 'Shields endpoint badge response for total number of URLs shortened',
 			tags: [server.Tags.Stats, server.Tags.Shields],
-			response: {200: fastify.getSchema('https://zws.im/schemas/ShieldsEndpointResponse.json'), 500: fastify.getSchema('https://zws.im/schemas/Error.json')}
+			response: {
+				[Http.Status.Ok]: fastify.getSchema('https://zws.im/schemas/ShieldsEndpointResponse.json'),
+				[Http.Status.InternalServerError]: fastify.getSchema('https://zws.im/schemas/Error.json')
+			}
 		},
-		handler: async (request, reply) => {
-			const stats = await urls.totalStats();
+		handler: async () => {
+			const stats = await instance.stats();
 
 			return {color: 'informational', label: 'urls', message: format.abbreviateNumber(stats.urls), schemaVersion: 1};
 		}

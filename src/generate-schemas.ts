@@ -1,12 +1,12 @@
-import {sum} from '@pizzafox/util';
-import cli from 'cli-ux';
 import fs from 'fs/promises';
 import path from 'path';
+import {sum} from '@jonahsnider/util';
+import cli from 'cli-ux';
 import * as tsj from 'ts-json-schema-generator';
 import logger from './logger';
 
 const schemas = {
-	responses: ['ShieldsEndpointResponse', 'ApiKeyError'],
+	responses: ['ShieldsEndpointResponse', 'ApiKeyError', 'ShortenHostnameError'],
 	models: [
 		'Error',
 		'Short',
@@ -18,12 +18,14 @@ const schemas = {
 		'AttemptedShortenHostnameError',
 		'UrlStats',
 		'UrlNotFoundError',
-		'NotHealthyError'
+		'NotHealthyError',
+		'AttemptedShortenBlockedHostnameError',
+		'UrlBlockedError'
 	],
 	parameters: ['VisitOptions', 'TotalStatsOptions']
 };
 
-const progress = cli.progress();
+const progress = cli.progress() as {stop: () => void; increment: () => void; start: (max: number, start: number) => void};
 const promises: Array<Promise<void>> = [];
 
 async function generate(config: tsj.Config) {
@@ -52,6 +54,7 @@ async function main() {
 
 					promises.push(promise);
 				})
+				// eslint-disable-next-line promise/prefer-await-to-then
 				.catch(error => {
 					logger.error(error);
 				});
@@ -69,7 +72,9 @@ progress.start(
 );
 
 main()
-	.then(() => progress.stop())
+	.then(() => {
+		progress.stop();
+	})
 	.catch(error => {
 		process.nextTick(() => {
 			throw error;
